@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PM Certificate Mock Test 1</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root{--leaf:#2f6b2f;--lime:#8fc31f;--sun:#f5c518;--cream:#fffbe6;--ink:#1d2b12;--mist:#f3f8e4}
+body{background:var(--cream);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.6}
+h1,h2,h5,.btn,.badge{font-family:"Trebuchet MS",Verdana,sans-serif}
+.top{background:linear-gradient(120deg,var(--sun),var(--lime));border-bottom:6px solid var(--leaf);padding:1.5rem 0}
+.bar{position:sticky;top:0;z-index:20;background:var(--leaf);color:#fff;padding:.5rem 0}
+.bar .progress{height:.7rem;background:#cfe3a8}.bar .progress-bar{background:var(--sun)}
+.qcard{background:#fff;border:2px solid var(--lime);border-left-width:8px;border-radius:.6rem;padding:1rem 1.1rem;margin-bottom:1rem}
+.qcard.ok{border-color:var(--leaf);background:#f1fae6}
+.qcard.bad{border-color:#c0392b;background:#fdf0ee}
+.opt{display:block;border:1px solid #cfdcaa;border-radius:.4rem;padding:.45rem .7rem;margin-bottom:.4rem;cursor:pointer}
+.opt:hover{background:var(--mist)}
+.opt.right{background:#d8f0b8;border-color:var(--leaf);font-weight:bold}
+.opt.wrong{background:#f8d7d3;border-color:#c0392b}
+.opt input{margin-right:.5rem}
+.reason{background:var(--mist);border-left:5px solid var(--sun);padding:.6rem .8rem;border-radius:.3rem;margin-top:.7rem}
+.btn-leaf{background:var(--leaf);color:#fff}.btn-leaf:hover{background:#245524;color:#fff}
+.btn-sun{background:var(--sun);color:var(--ink)}.btn-sun:hover{background:#dfb10d}
+.btn:focus,.form-check-input:focus,.form-select:focus{box-shadow:0 0 0 .25rem rgba(47,107,47,.45)}
+.form-select{max-width:260px;display:inline-block}
+.matchrow{margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<header class="top"><div class="container">
+  <h1 class="h2 fw-bold mb-1">Mock Test 1: Google PM Certificate</h1>
+  <p class="mb-0">Original practice simulation, not an official Google assessment. 50 questions. Choose your answer, press Check answer to score it, and press View answer to see the correct choice and the reason.</p>
+</div></header>
+
+<div class="bar"><div class="container">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div><strong id="sc">Score 0 / 50</strong> &nbsp; Checked <span id="at">0</span> / 50 &nbsp; Time <span id="tm">00:00</span></div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-sun" onclick="finish()">Finish and see result</button>
+      <button class="btn btn-sm btn-light" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+  <div class="progress mt-2" role="progressbar" aria-label="Checked questions"><div class="progress-bar" id="pb" style="width:0%"></div></div>
+</div></div>
+
+<main class="container py-4">
+  <div id="result" class="qcard d-none"></div>
+  <div id="qs"></div>
+</main>
+
+<script>
+const SEC={A:"Initiation and scoping",B:"Planning and schedule",C:"Budget and earned value",D:"Risk",E:"Stakeholders and communication",F:"Teams and leadership",G:"Quality",H:"Change management",I:"Agile and Kanban",J:"Closure and career"};
+const TF=["True","False"];
+// [section, question, options, answer indices, reason, kind(optional: x = matching), match items]
+const Q=[
+["A","Which description best fits a program?",["A single project with one deliverable","A group of related projects managed together to gain benefits not available from managing them separately","All the work an organization does in a year","A repeating operational process"],[1],"A program groups related projects to gain shared benefits. A is one project, C is closer to a portfolio, and D is operations."],
+["A","“The client’s IT team will provide server access by March 3.” In a project plan, this is best classified as:",["A constraint","A deliverable","An assumption","A milestone"],[2],"It is believed true but unconfirmed, so it is an assumption. Record it, confirm it, and track a risk if it is late."],
+["A","Who normally signs the project charter to authorize the project?",["The developer","The project sponsor","The quality tester","A customer survey respondent"],[1],"The sponsor signs the charter, which formally authorizes the project."],
+["A","Which two goals are SMART? (Select 2)",["“Make customers happier.”","“Reduce average support-ticket resolution time from 48 hours to 24 hours within 6 months of launch.”","“Build a great app.”","“Increase newsletter sign-ups from 500 to 800 per month within 90 days of the new website launch.”"],[1,3],"B and D each have a baseline, a target, and a deadline. A and C are vague and cannot be measured."],
+["A","A client asks for “a system like our competitor’s” and cannot list features. The best first step is to:",["Start building the competitor’s features you can guess","Run a short discovery phase (interviews, user stories, prioritization) to produce a scope statement the client signs","Refuse the project","Quote a fixed price immediately"],[1],"Vague requirements need discovery first. Guessing or quoting a price before scope is defined leads to disputes and rework."],
+["A","“Once the scope statement is signed, any later change to scope is scope creep.”",TF,[1],"False. Approved changes made through change control are normal. Scope creep is uncontrolled change."],
+["B","Task A (2 days) starts first. B (3 days) and C (6 days) follow A. D (4 days) follows B. E (2 days) follows C. F (3 days) follows both D and E. What is the project duration, and what is the slack on B?",["12 days; slack 0","13 days; slack 1","13 days; slack 3","16 days; slack 1"],[1],"A-C-E-F = 2+6+2+3 = 13 (critical). A-B-D-F = 2+3+4+3 = 12, so B’s slack is 13 − 12 = 1."],
+["B","A task has O = 3, M = 6, P = 15 days. What are the PERT estimate and standard deviation?",["6 days; SD 2","7 days; SD 2","8 days; SD 4","7 days; SD 4"],[1],"PERT = (3 + 4×6 + 15) ÷ 6 = 42 ÷ 6 = 7. SD = (15 − 3) ÷ 6 = 2."],
+["B","Adding extra people to critical-path tasks to shorten the schedule is called:",["Fast-tracking","Crashing","Resource leveling","Rebaselining"],[1],"Crashing adds resources (more cost). Fast-tracking overlaps tasks (more risk). Leveling smooths workloads. Rebaselining resets the plan."],
+["B","A task has duration 4 days, earliest start day 6, and latest finish day 14. What is its slack?",["0 days","2 days","4 days","8 days"],[2],"EF = 6 + 4 = 10. Slack = LF − EF = 14 − 10 = 4 days."],
+["B","Which two are valid schedule compression techniques? (Select 2)",["Crashing","Adding hidden padding to every task","Fast-tracking","Removing quality checks without telling anyone"],[0,2],"Crashing and fast-tracking are the two standard techniques. Hidden padding and silent quality cuts are poor practice."],
+["B","Past projects show one report takes 4 hours to build. The new project needs 25 reports, and labor costs $60 per hour. Using parametric estimating, what is the cost?",["$1,500","$4,000","$6,000","$10,000"],[2],"25 reports × 4 hours × $60 = $6,000. Parametric estimating multiplies a unit rate by the quantity."],
+["C","BAC = $100,000, PV = $40,000, EV = $35,000, AC = $38,000. What are CV and SV?",["CV −$3,000; SV −$5,000","CV +$3,000; SV +$5,000","CV −$5,000; SV −$3,000","CV −$3,000; SV +$5,000"],[0],"CV = EV − AC = 35,000 − 38,000 = −3,000. SV = EV − PV = 35,000 − 40,000 = −5,000."],
+["C","PV = $54,000, EV = $45,000, AC = $50,000. What are CPI and SPI (rounded to 2 decimals)?",["CPI 0.90; SPI 0.83","CPI 1.11; SPI 1.20","CPI 0.83; SPI 0.90","CPI 0.90; SPI 1.20"],[0],"CPI = EV ÷ AC = 45 ÷ 50 = 0.90. SPI = EV ÷ PV = 45 ÷ 54 = 0.83."],
+["C","BAC = $90,000 and CPI = 0.75. Assuming current cost performance continues, what are EAC and the variance at completion (VAC = BAC − EAC)?",["EAC $120,000; VAC −$30,000","EAC $67,500; VAC +$22,500","EAC $120,000; VAC +$30,000","EAC $90,000; VAC $0"],[0],"EAC = BAC ÷ CPI = 90,000 ÷ 0.75 = 120,000. VAC = 90,000 − 120,000 = −30,000."],
+["C","BAC = $60,000, EV = $20,000, AC = $25,000. The overrun was a one-off event, and the remaining work will follow the original plan. What are EAC and ETC?",["EAC $65,000; ETC $40,000","EAC $75,000; ETC $50,000","EAC $60,000; ETC $35,000","EAC $65,000; ETC $65,000"],[0],"One-off variance: EAC = AC + (BAC − EV) = 25,000 + 40,000 = 65,000. ETC = EAC − AC = 40,000."],
+["C","BAC = $80,000. The project is 25% complete, and AC = $22,000. What is CPI (rounded to 2 decimals)?",["0.91","1.10","0.88","0.25"],[0],"EV = 25% × 80,000 = 20,000. CPI = 20,000 ÷ 22,000 = 0.91."],
+["C","“A CPI greater than 1.0 means the project is over budget.”",TF,[1],"False. CPI above 1.0 means you earn more value than you spend (under budget). Below 1.0 means over budget."],
+["D","Risk A: 30% chance of −$20,000. Opportunity B: 20% chance of +$10,000. What is the net EMV?",["−$8,000","−$4,000","−$6,000","+$4,000"],[1],"A = 0.30 × −20,000 = −6,000. B = 0.20 × +10,000 = +2,000. Net = −$4,000. Do not forget to include opportunities."],
+["D","Which two are issues? (Select 2)",["“The vendor might raise prices next quarter.”","“The test environment has been down since this morning and testing is blocked.”","“A key reviewer may be on leave in week 8.”","“A required approval is now three days overdue and the team is idle.”"],[1,3],"B and D are already happening. A and C are possible future events, so they are risks."],
+["D","A contract clause makes the vendor pay penalties if it delivers late. This risk response is mainly:",["Avoid","Mitigate","Transfer","Accept"],[2],"Penalties shift the financial consequence to the vendor: transfer. The risk itself still exists."],
+["D","Which is the best example of a trigger for the risk “payment sandbox may be delivered late”?",["“The vendor is unreliable.”","“No sandbox access by the end of week 4.”","“We will build a mock API.”","“The project will be delayed.”"],[1],"A trigger is an observable early-warning sign. C is a response and D is the impact."],
+["E","A group of frequent end users who have low authority but high interest in the project should generally be:",["Monitored with minimal effort","Kept informed and consulted","Kept satisfied only","Ignored"],[1],"Low power and high interest means keep informed and involve them, for example in testing."],
+["E","Your RACI shows no one marked “A” for the task “approve release.” The best action is to:",["Leave it, since the team will work it out","Ask the sponsor to name one accountable person and update the RACI","Mark everyone “A”","Remove the task"],[1],"Every task needs exactly one accountable person. The sponsor can settle it."],
+["E","Which information is best suited to a one-page executive update?",["A list of every code commit","Overall status, forecast, top risks, and decisions needed","Full meeting transcripts","Individual developer timesheets"],[1],"Executives need status, forecast, top risks, and the decisions required of them."],
+["E","Channels = n(n − 1) ÷ 2. A team grows from 7 people to 11 people. How many channels exist at 11, and how many were added?",["55 channels; 34 added","55 channels; 4 added","110 channels; 89 added","21 channels; 34 added"],[0],"7 people: 21 channels. 11 people: 11 × 10 ÷ 2 = 55. Added = 55 − 21 = 34."],
+["E","In a meeting, the sponsor says “sounds fine” to a schedule change, but later says she never approved it. What is the best practice to prevent this?",["Record nothing and rely on memory","Confirm decisions in writing right after the meeting, with owner and date, and ask for acknowledgment","Avoid asking for approvals","Hold more meetings"],[1],"A written confirmation with an owner and date creates a shared record."],
+["F","The Tuckman stage in which the project ends and the team is recognized and released is:",["Norming","Performing","Adjourning","Storming"],[2],"Adjourning is the closing stage. Performing is the efficient stage that comes before it."],
+["F","A team member has missed two deadlines. What should you do first?",["Remove them from the project","Meet privately, check that expectations were clear, and ask open questions to find the cause","Criticize them in the team meeting","Redo their work silently"],[1],"Understand the cause (unclear task, overload, skills) before acting, and do it in private."],
+["F","The sponsor and a team lead give conflicting priorities for the next two weeks. What is the best approach?",["Follow the louder person","Bring them together, show the trade-offs, ask the sponsor to decide, and document the decision","Do both at once with no change in date","Choose silently yourself"],[1],"Make trade-offs visible, let the person with authority decide, and record it."],
+["F","Which statement about the Scrum Master is most accurate?",["Assigns tasks to Developers and owns the project budget","Helps the team understand and use Scrum, and helps remove impediments","Orders the product backlog","Approves all change requests"],[1],"The Scrum Master coaches and facilitates. The Product Owner orders the backlog and Developers plan their own work."],
+["G","Which two are quality control activities? (Select 2)",["Testing the checkout flow against acceptance criteria","Auditing whether the team follows the code-review process","Inspecting a finished deliverable against its specification","Updating the team’s coding standard"],[0,2],"QC examines the product (testing, inspecting). Auditing the process and updating standards are QA, which focuses on the process."],
+["G","Defects by category: 45, 25, 15, 10, and 5 (100 total). How many of the largest categories are needed to account for at least 85% of defects?",["2","3","4","5"],[1],"Cumulative: 45%, 70%, 85%. Three categories reach 85%."],
+["G","60 test cases were run and 54 passed. The target pass rate is 95%. What is the current pass rate, and how many more tests must pass?",["90%; 3 more","90%; 6 more","95%; 0 more","85%; 3 more"],[0],"54 ÷ 60 = 90%. 95% × 60 = 57, so 57 − 54 = 3 more must pass."],
+["G","Match each action to its type.",["Defect repair","Corrective action","Preventive action"],[0,1,2],"Fixing the bug is repair. Removing the cause for this team is corrective. Adding a step to the template for future projects is preventive.","x",["Fix a bug in the code.","Change the process so the cause of that bug is removed for this team.","Add a new requirement-review step to the template for all future projects, to prevent a similar kind of defect."]],
+["H","The sponsor approves a change verbally in a hallway. What should you do?",["Nothing, since it was approved","Log it, document the impact and decision in writing, update plans, and communicate to those affected","Reject it","Ask the team to implement it without telling anyone"],[1],"A decision is only effective when it is recorded, plans are updated, and the people affected know."],
+["H","A change adds 6 days to a critical-path task and costs $1,800. The schedule has a 4-day buffer. The current budget is $25,000. If approved, what are the net schedule delay and the revised budget?",["2 days; $26,800","6 days; $26,800","2 days; $23,200","10 days; $26,800"],[0],"Net delay = 6 − 4 = 2 days. Revised budget = 25,000 + 1,800 = $26,800."],
+["H","Staff do not understand why the new system is needed. Which ADKAR element is weakest?",["Awareness","Desire","Ability","Reinforcement"],[0],"Not knowing why the change is needed is a gap in Awareness. Reinforcement is about keeping the change in place."],
+["I","Which of these is a Scrum artifact?",["Sprint Review","Increment","Daily Scrum","Sprint Retrospective"],[1],"The Scrum artifacts are the Product Backlog, Sprint Backlog, and Increment. The others are events."],
+["I","A team completed 25, 20, and 30 points in three sprints. 100 points remain. Using the average velocity, how many sprints are needed?",["3","4","5","6"],[1],"Average = 75 ÷ 3 = 25. 100 ÷ 25 = 4 sprints."],
+["I","A team committed to items of 8, 5, 5, and 3 points. It finished the 8, one 5, and the 3. The second 5-point item is 90% done. What is the sprint velocity?",["16","17","20.5","21"],[0],"Only items that meet the Definition of Done count: 8 + 5 + 3 = 16. Partly done work counts as zero."],
+["I","A 10-day sprint starts with 40 points. After day 3, 31 points remain. How does this compare with the ideal burndown?",["3 points ahead","3 points behind","9 points behind","Exactly on track"],[1],"Ideal = 4 points per day, so 28 remain after day 3. Actual is 31, so 3 points behind."],
+["I","Stakeholders treat the Sprint Review as a one-way status meeting, and little feedback is gathered. What is the best fix?",["Cancel the review","Demonstrate the working Increment, invite feedback, and use it to adjust the Product Backlog","Replace it with a longer slide presentation","Remove stakeholders"],[1],"The review is a working session to inspect the Increment and adapt the Product Backlog."],
+["I","A Kanban team averages 12 items in progress and finishes 4 items per week. Using Little’s Law, the average cycle time is about:",["1 week","3 weeks","8 weeks","48 weeks"],[1],"Cycle time ≈ WIP ÷ throughput = 12 ÷ 4 = 3 weeks."],
+["I","Which is the best-written user story?",["“Improve the system.”","“As a customer, I want to receive a confirmation email after booking so that I know my appointment is secured.”","“Build the database.”","“The login must be good.”"],[1],"A good story names the user, the goal, and the benefit, and is testable."],
+["J","At closure, the app is delivered and accepted, but the business goal (60% online bookings) can only be measured three months later. What is the best approach in the closure report?",["Claim the 60% goal was achieved","Report outputs delivered now, and name an owner and review dates for measuring the outcomes","Leave the goal out of the report","Delay closure by three months"],[1],"Prove outputs now and schedule outcome reviews with a named owner. Never claim unmeasured results."],
+["J","Original baseline: $40,000. Approved changes: +$3,000 and −$1,000. Actual cost: $41,500. How should the result be reported?",["$1,500 over the original baseline and $500 under the revised budget","$500 over the revised budget","$1,500 under budget in every comparison","$2,000 over the revised budget"],[0],"Revised budget = 40,000 + 3,000 − 1,000 = 42,000. Actual 41,500 is $500 under the revised budget and $1,500 over the original."],
+["J","Which resume bullet is strongest (assume all details are true)?",["“Responsible for the website.”","“Led a 5-person team to relaunch a retail website on schedule; page-load time fell from 4 s to 1.8 s and online orders rose 22% in three months.”","“Worked hard on many projects.”","“Team player with great communication.”"],[1],"It shows action, scope, and measurable results."],
+["J","An interviewer asks, “Tell me about a time you disagreed with a stakeholder.” Which answer approach is strongest?",["“I have never disagreed with anyone.”","A STAR story where you listened to their concern, shared facts and options, reached an agreed decision, and state the result","A story that blames the stakeholder","A vague answer about “good communication”"],[1],"STAR shows your actions and results, and it respects the other person."],
+["J","You want to share a past project in your portfolio, but it was for a confidential client. The best approach is to:",["Post the client’s internal documents","Describe the work generally, use only cleared outcomes, and omit confidential data and names","Invent a more impressive project","Show nothing about any work experience"],[1],"Describe the work generally and share only what is cleared. Never breach confidentiality or invent results."]
+];
+const st=[];let t0=Date.now(),timer;
+const L="ABCDEFGH";
+const esc=s=>s;
+function build(){
+  document.getElementById("qs").innerHTML=Q.map((q,i)=>{
+    const [s,txt,o,a,r,k,items]=q,multi=a.length>1&&k!=="x";
+    let body="";
+    if(k==="x"){
+      body=items.map((it,j)=>`<div class="matchrow"><div>${j+1}. ${it}</div><select class="form-select form-select-sm" id="q${i}m${j}" aria-label="Answer for item ${j+1}"><option value="">Choose...</option>${o.map((x,n)=>`<option value="${n}">${L[n]}. ${x}</option>`).join("")}</select></div>`).join("");
+    }else{
+      body=o.map((x,n)=>`<label class="opt" id="q${i}o${n}"><input type="${multi?"checkbox":"radio"}" name="q${i}" value="${n}">${L[n]}. ${x}</label>`).join("");
+    }
+    const hint=k==="x"?"Match each item":multi?"Select "+a.length:"Select 1";
+    return `<div class="qcard" id="c${i}"><div class="d-flex justify-content-between mb-2"><h5 class="mb-0">Question ${i+1}</h5><span><span class="badge text-bg-success">${SEC[s]}</span> <span class="badge text-bg-warning">${hint}</span></span></div><p>${txt}</p>${body}<div class="d-flex flex-wrap gap-2 align-items-center mt-2"><button class="btn btn-sm btn-leaf" onclick="check(${i})">Check answer</button><button class="btn btn-sm btn-sun" onclick="view(${i})">View answer</button><span id="f${i}" class="fw-bold" role="status"></span></div><div id="r${i}" class="reason d-none"></div></div>`;
+  }).join("");
+  Q.forEach((_,i)=>st[i]={chk:false,ok:null});
+}
+function read(i){
+  const q=Q[i];
+  if(q[5]==="x"){
+    const v=q[6].map((_,j)=>document.getElementById(`q${i}m${j}`).value);
+    return v.includes("")?null:v.map(Number);
+  }
+  const v=[...document.querySelectorAll(`input[name=q${i}]:checked`)].map(e=>+e.value);
+  return v.length?v:null;
+}
+function check(i){
+  const q=Q[i],u=read(i),f=document.getElementById("f"+i);
+  if(!u){f.textContent="Choose an answer first.";f.className="fw-bold text-warning-emphasis";return}
+  const ok=u.length===q[3].length&&u.every((x,n)=>q[5]==="x"?x===q[3][n]:q[3].includes(x));
+  st[i]={chk:true,ok};
+  const c=document.getElementById("c"+i);
+  c.classList.remove("ok","bad");c.classList.add(ok?"ok":"bad");
+  f.textContent=ok?"Correct":"Not quite. Try again or view the answer.";
+  f.className="fw-bold "+(ok?"text-success":"text-danger");
+  upd();
+}
+function view(i){
+  const q=Q[i],r=document.getElementById("r"+i);
+  let ans;
+  if(q[5]==="x"){ans=q[6].map((it,j)=>`${j+1} → ${L[q[3][j]]}. ${q[2][q[3][j]]}`).join("<br>")}
+  else{
+    q[3].forEach(n=>document.getElementById(`q${i}o${n}`).classList.add("right"));
+    if(st[i].chk&&!st[i].ok)document.querySelectorAll(`input[name=q${i}]:checked`).forEach(e=>{if(!q[3].includes(+e.value))e.parentElement.classList.add("wrong")});
+    ans=q[3].map(n=>`${L[n]}. ${q[2][n]}`).join("<br>");
+  }
+  r.innerHTML=`<strong>Correct answer:</strong><br>${ans}<p class="mb-0 mt-2"><strong>Reason:</strong> ${q[4]}</p>`;
+  r.classList.remove("d-none");
+}
+function upd(){
+  const a=st.filter(x=>x.chk).length,c=st.filter(x=>x.ok).length;
+  document.getElementById("sc").textContent=`Score ${c} / ${Q.length}`;
+  document.getElementById("at").textContent=a;
+  document.getElementById("pb").style.width=(a/Q.length*100)+"%";
+}
+function tick(){const s=Math.floor((Date.now()-t0)/1000);document.getElementById("tm").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function finish(){
+  const c=st.filter(x=>x.ok).length,a=st.filter(x=>x.chk).length,p=Math.round(c/Q.length*100);
+  const by={};Q.forEach((q,i)=>{by[q[0]]=by[q[0]]||{n:0,c:0};by[q[0]].n++;if(st[i].ok)by[q[0]].c++});
+  const rows=Object.keys(by).map(k=>{const x=by[k],pc=x.c/x.n;return `<tr><td>${SEC[k]}</td><td>${x.c} / ${x.n}</td><td>${pc>=.8?"Strong":pc>=.6?"Fair":"Review"}</td></tr>`}).join("");
+  const el=document.getElementById("result");
+  el.className="qcard ok";
+  el.innerHTML=`<h2 class="h4">Your result: ${c} / ${Q.length} (${p}%)</h2><p>Checked ${a} of ${Q.length} questions. Unchecked questions count as zero. This is a practice simulation, not an official pass mark. Aim for 80% or higher before you move on.</p><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Topic</th><th>Score</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div><p class="mb-0">Press View answer on any question you missed to read the reason.</p>`;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function resetAll(){
+  if(!confirm("Reset all answers and the timer?"))return;
+  build();upd();t0=Date.now();
+  const el=document.getElementById("result");el.className="qcard d-none";el.innerHTML="";
+  window.scrollTo({top:0});
+}
+build();upd();timer=setInterval(tick,1000);
+</script>
+</body>
+</html>
